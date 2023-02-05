@@ -197,7 +197,7 @@ function fillItems(itemArr) {
         tempImg.id = itemArr[i].name;
         itemDiv.appendChild(tempImg);
         tempImg.addEventListener("click", function() {
-            alert(itemArr[i].hint);
+            //alert(itemArr[i].hint);
         })
     }
 }
@@ -215,6 +215,7 @@ function updateScene() {
                 if (i == 0) {
                     currScene.ended = true;
                     showLevelEnd(newScene, newItems);
+                    document.getElementById("byte").style.backgroundImage = "url('assets/idle.gif')";
                     return;
                 }
                 currScene.x[i] = 1;
@@ -245,15 +246,14 @@ function showLevelEnd(nextScene, newItems) {
 
 let endDiv = document.getElementById("level_end");
 document.getElementById("next_button").addEventListener("click", function() {
-    alert(currSceneNum);
     currSceneNum+=1;
-    alert(currSceneNum);
     endDiv.style.display = "none";
     document.body.style.backgroundImage = newScene.bg;
     score = 0;
     currScene.container.innerHTML = "";
     if (currSceneNum == 1) {
-        alert(currSceneNum);
+        document.getElementById("byte").style.backgroundImage = "url('assets/running.gif')";
+        document.getElementById("byte").style.zIndex = 5;
         currScene = newScene;
         itemArr = newItems;
         fillItems(itemArr);
@@ -263,16 +263,14 @@ document.getElementById("next_button").addEventListener("click", function() {
         updateScene();
     }
     if (currSceneNum == 2) {
-        alert();
         cancelAnimationFrame(animationId);
         frame.innerHTML = "<div id='endText'>Home Sweet Home</div>";
         frame.style.backgroundImage = "url('assets/EndScene.png')";
     }
-
 });
 
 document.getElementById("again_button").addEventListener("click", function() {
-    alert(currSceneNum);
+    document.getElementById("byte").style.backgroundImage = "url('assets/running.gif')";
     //currSceneNum--;
     endDiv.style.display = "none";
     //currScene.container.innerHTML = "";

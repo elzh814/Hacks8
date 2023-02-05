@@ -143,3 +143,16 @@ body {
     top: 10%;
     color: rgb(245, 108, 147);
 }
+
+#byte {
+    position: absolute;
+    width: 10%;
+    height: auto;
+    aspect-ratio: 1/1;
+    top: 45%;
+    left: 5%;
+    background-image: url("assets/running.gif");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 5;
+}
