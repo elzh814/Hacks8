@@ -1,7 +1,14 @@
+@font-face {
+    font-family: pixelFont;
+    src: url(assets/Minecraft.ttf);
+}
 body {
-    background-repeat: no-repeat;
+    /* background-repeat: no-repeat; */
     background-size: cover;
     height: 100%;
+    margin: 0;
+    background-image: url("assets/BGs/afternoonBG.jpeg");
+    font-family: pixelFont;
 }
 
 .frame {
@@ -18,7 +25,7 @@ body {
     background-repeat: no-repeat;
     background-position: 50%;
 
-    background-color: aqua;
+    /* background-color: aqua; */
 }
 
 .scene_container {
@@ -28,7 +35,7 @@ body {
 
     background-repeat: no-repeat;
     background-size: cover;
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
 }
 
 .para_canvas {
@@ -41,19 +48,98 @@ body {
     position: absolute;
     width: 100%;
     height: 20%;
-    background-color: aqua;
+    /* background-color: aqua; */
     bottom: 0;
+    border-radius: 20px;
+    background-image: url("assets/hintBox.png");
+    background-size: cover;
 }
 
 .items {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     padding: 0;
     margin: 0;
+    height: 100%;
+    width: 80%;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
-/* .item {
-    flex: 0 0 0px;
-} */
+.item {
+    max-height: 80%;
+}
+
+#start {
+    background-color: aquamarine;
+    background-image: url("assets/start.png");
+    z-index: 100;
+}
+
+#level_end {
+    position: absolute;
+    width: 90%;
+    height: 30%;
+    top: 50%;
+    transform: translate(0, -50%);
+    background-color: rgba(245, 245, 220, 0.701);
+    z-index: 100;
+    padding: 5%;
+    font-size: 5vw;
+    text-align: center;
+    display: none;
+}
+
+#level_end > button {
+    background-color: rgb(113, 184, 242);
+    border-style: none;
+    font-size: 2vw;
+    padding: 2%;
+    font-family: pixelFont;
+}
+
+#start_UI {
+    position: absolute;
+    width: fit-content;
+    height: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 3%;
+    text-align: center;
+}
+
+#start_UI > button {
+    position: relative;
+    font-size: 2vw;
+    top: 65%;
+    margin: 3%;
+    font-family: pixelFont;
+    padding: 4%;
+    border:  solid;
+    border-color: rgb(6, 6, 64);
+}
+
+#tutorial {
+    position: absolute;
+    font-size: 1.5vw;
+    width: 150%;
+    left: 50%;
+    top: 15%;
+    transform: translate(-50%, 0);
+    background-color: rgb(255, 233, 253);
+    padding: 5%;
+    border-radius: 15px;
+    display: none;
+}
+
+#endText {
+    position: absolute;
+    font-size: 4vw;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 10%;
+    color: rgb(245, 108, 147);
+}

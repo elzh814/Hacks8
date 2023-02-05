@@ -1,5 +1,4 @@
 // Scene class handles panoramic scrolling image outside window
-// TODO: Create function that deletes the Scene object OOO
 class Scene {
     paraImgArr = [];
     paraCanArr = [];
@@ -7,6 +6,8 @@ class Scene {
     x = [];
     container;
     name;
+    ended = false;
+    bg;
     constructor(numPara, container) {
         this.numPara = numPara;
         this.container = container;
@@ -51,6 +52,9 @@ class Scene {
             let canvas = this.paraCanArr[i];
             let ctx = canvas.getContext("2d");
             if ((this.x[i]) * this.moveXBy[i] + Math.ceil(this.paraImgArr[i].height * 1.77) > this.paraImgArr[i].width) {
+                if (i == 0) {
+                    this.ended = true;
+                }
                 this.x[i] = 1;
             }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -79,44 +83,23 @@ function draw(scene) {
         }
     }
 }
+var animationId;
+var currSceneNum = 0;
 
 var frame = document.getElementById("main_frame");
 var sceneCont = document.getElementById("scene");
 var rect = sceneCont.getBoundingClientRect();
 
 let currScene = new Scene(3, sceneCont);
-currScene.setSpeeds([1, .5, .25]);
+currScene.setSpeeds([3, 2, 1]);
 currScene.initParaImg("tess");
 currScene.addCanvas(sceneCont);
+currScene.bg = "url('assets/BGs/morningBG.jpeg')";
 
 let newScene = new Scene(3, sceneCont);
-newScene.setSpeeds([1, .5, .25]);
+newScene.setSpeeds([.9, .4, .24]);
 newScene.initParaImg("lauren");
-newScene.addCanvas(sceneCont);
-
-currScene = newScene;
-
-let score = 0;
-
-// updates pano by clearing the canvases, changing the "frame" that is drawn onto the canvases, and drawing the updated frame.
-// requires currScene (the current Scene object being animated) to be defined
-function updateScene() {
-    for (let i = currScene.numPara - 1; i >= 0; i--) {
-        let canvas = document.getElementById("para" + currScene.name + i);
-        let ctx1 = canvas.getContext("2d");
-        if ((currScene.x[i]) * currScene.moveXBy[i] + Math.ceil(currScene.paraImgArr[i].height * 1.77) > currScene.paraImgArr[i].width) {
-            currScene.x[i] = 1;
-            //currScene.moveXBy[i] = 0;
-        }
-        ctx1.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Measurements get messed up for some reason so width of drawn pano image is determined by  multiplying height of frame by 16/9.
-        // Means all images must have the same width/height ratio of 16/9 to prevent stuttering
-        ctx1.drawImage(currScene.paraImgArr[i], currScene.x[i] * currScene.moveXBy[i], 0, Math.ceil(currScene.paraImgArr[i].height * 1.77), currScene.paraImgArr[i].height, 0, 0, canvas.width, canvas.height);
-        currScene.x[i] += 1;
-    }
-    window.requestAnimationFrame(updateScene);
-}
+newScene.bg = "url('assets/BGs/nightBG.png')";
 
 class Item {
     hint;
@@ -157,7 +140,13 @@ item.addHint("this is red");
 item1.addHint("this is a color");
 item2.addHint("this is blue");
 
+var itemL = new Item("lauren0", newScene, 465, 280, 1, 130, 120);
+var itemL1 = new Item("lauren1", newScene, 900, 350, 0, 125, 115);
+var itemL2 = new Item("lauren2", newScene, 980, 195, 1, 210, 180);
+var itemL3 = new Item("lauren3", newScene, 1440, 310, 0, 55, 70);
+
 var itemArr = [item, item1, item2, item3];
+var newItems = [itemL, itemL1, itemL2, itemL3];
 
 function getMouseOnFrame(x, y, scene) {
     let canvasX = x - (window.innerWidth - frame.getBoundingClientRect().width)/2;
@@ -201,6 +190,7 @@ frame.addEventListener('click', function(event) {
 
 function fillItems(itemArr) {
     let itemDiv = document.getElementById("items_menu");
+    itemDiv.innerHTML = "";
     for (let i = 0; i < itemArr.length; i++) {
         let tempImg = itemArr[i].img;
         tempImg.className = "item";
@@ -212,6 +202,101 @@ function fillItems(itemArr) {
     }
 }
 
+let score = 0;
+
+// updates pano by clearing the canvases, changing the "frame" that is drawn onto the canvases, and drawing the updated frame.
+// requires currScene (the current Scene object being animated) to be defined
+function updateScene() {
+    if (!currScene.ended) {
+        for (let i = currScene.numPara - 1; i >= 0; i--) {
+            let canvas = document.getElementById("para" + currScene.name + i);
+            let ctx1 = canvas.getContext("2d");
+            if ((currScene.x[i]) * currScene.moveXBy[i] + Math.ceil(currScene.paraImgArr[i].height * 1.77) > currScene.paraImgArr[i].width) {
+                if (i == 0) {
+                    currScene.ended = true;
+                    showLevelEnd(newScene, newItems);
+                    return;
+                }
+                currScene.x[i] = 1;
+            }
+            ctx1.clearRect(0, 0, canvas.width, canvas.height);
+    
+            // Measurements get messed up for some reason so width of drawn pano image is determined by  multiplying height of frame by 16/9.
+            // Means all images must have the same width/height ratio of 16/9 to prevent stuttering
+            ctx1.drawImage(currScene.paraImgArr[i], currScene.x[i] * currScene.moveXBy[i], 0, Math.ceil(currScene.paraImgArr[i].height * 1.77), currScene.paraImgArr[i].height, 0, 0, canvas.width, canvas.height);
+            currScene.x[i] += 1;
+        }
+        animationId = window.requestAnimationFrame(updateScene);
+    }
+}
+
+function start(newScene, itemArr){
+    currScene = newScene;
+    score = 0;
+    fillItems(itemArr);
+}
+
+function showLevelEnd(nextScene, newItems) {
+    let endDiv = document.getElementById("level_end");
+    endDiv.style.display = "block";
+    document.getElementById("score").innerHTML = "You found " + score + "/" + itemArr.length + " items!";
+
+}
+
+let endDiv = document.getElementById("level_end");
+document.getElementById("next_button").addEventListener("click", function() {
+    alert(currSceneNum);
+    currSceneNum+=1;
+    alert(currSceneNum);
+    endDiv.style.display = "none";
+    document.body.style.backgroundImage = newScene.bg;
+    score = 0;
+    currScene.container.innerHTML = "";
+    if (currSceneNum == 1) {
+        alert(currSceneNum);
+        currScene = newScene;
+        itemArr = newItems;
+        fillItems(itemArr);
+        draw(currScene);
+        currScene.addCanvas(sceneCont);
+        cancelAnimationFrame(animationId);
+        updateScene();
+    }
+    if (currSceneNum == 2) {
+        alert();
+        cancelAnimationFrame(animationId);
+        frame.innerHTML = "<div id='endText'>Home Sweet Home</div>";
+        frame.style.backgroundImage = "url('assets/EndScene.png')";
+    }
+
+});
+
+document.getElementById("again_button").addEventListener("click", function() {
+    alert(currSceneNum);
+    //currSceneNum--;
+    endDiv.style.display = "none";
+    //currScene.container.innerHTML = "";
+    currScene.ended = false;
+    for (let i = 0; i < currScene.numPara; i++) {
+        currScene.x[i] = 1;
+    }
+    cancelAnimationFrame(animationId);
+    updateScene();
+});
+
 fillItems(itemArr);
 draw(currScene);
+
+document.getElementById("tutorial_button").addEventListener("click", function() {
+let tut = document.getElementById("tutorial");
+tut.style.display = "block";
+tut.innerHTML = "Welcome to Byte's Byte Sized Adventure! Byte is setting off the see the world and doesn't want to miss a single detail! Help Byte along the way by pointing out all the interesting things for him to see. As the world scrolls by, look carefully for the items Byte is searching for. When you see one, click it! But hurry, because once you pass it, you won't get another chance to see it until Byte passes through the area again. Good luck and have fun!";
+});
+
+document.getElementById("start_button").addEventListener("click", function() {
+document.getElementById("start").remove();
+document.body.style.backgroundImage = currScene.bg;
 updateScene();
+});
+
+
