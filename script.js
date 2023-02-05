@@ -91,7 +91,7 @@ var sceneCont = document.getElementById("scene");
 var rect = sceneCont.getBoundingClientRect();
 
 let currScene = new Scene(3, sceneCont);
-currScene.setSpeeds([3, 2, 1]);
+currScene.setSpeeds([.9, .4, .24]);
 currScene.initParaImg("tess");
 currScene.addCanvas(sceneCont);
 currScene.bg = "url('assets/BGs/morningBG.jpeg')";

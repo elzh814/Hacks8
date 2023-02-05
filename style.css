@@ -9,6 +9,7 @@ body {
     margin: 0;
     background-image: url("assets/BGs/afternoonBG.jpeg");
     font-family: pixelFont;
+    overflow: hidden;
 }
 
 .frame {
